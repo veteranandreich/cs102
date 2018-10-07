@@ -48,4 +48,31 @@ def decrypt_vigenere(ciphertext, keyword):
     'ATTACKATDAWN'
     """
     # PUT YOUR CODE HERE
+    i = 0
+    plaintext = ''
+    for lit in ciphertext:
+        if 'A' <= lit <= 'Z':
+            if i > len(keyword) - 1:
+                i = 0
+            if 'A' <= keyword[i] <= 'Z':
+                lit1 = ord(lit) - (ord(keyword[i]) - 65)
+                if lit1 < ord('A'):
+                    lit1 += 26
+            elif 'a' <= keyword[i] <= 'z':
+                lit1 = ord(lit) - (ord(keyword[i]) - 97)
+                if lit1 < ord('A'):
+                    lit1 += 26
+        if 'a' <= lit <= 'z':
+            if i > len(keyword) - 1:
+                i = 0
+            if 'A' <= keyword[i] <= 'Z':
+                lit1 = ord(lit) - (ord(keyword[i]) - 65)
+                if lit1 < ord('a'):
+                    lit1 += 26
+            elif 'a' <= keyword[i] <= 'z':
+                lit1 = ord(lit) - (ord(keyword[i]) - 97)
+                if lit1 < ord('a'):
+                    lit1 += 26
+        i += 1
+        plaintext += chr(lit1)
     return plaintext
