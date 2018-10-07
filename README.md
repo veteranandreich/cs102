@@ -1,0 +1,1 @@
+Vladimir Goncharov, Saint-Petersburg, Studying at ITMO University
