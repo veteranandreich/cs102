@@ -8,6 +8,33 @@ def encrypt_vigenere(plaintext, keyword):
     'LXFOPVEFRNHR'
     """
     # PUT YOUR CODE HERE
+    i=0
+    ciphertext=''
+    for lit in plaintext:
+        if 'A'<=lit<='Z':
+            if i>len(keyword)-1:
+                i=0
+            if 'A'<=keyword[i]<='Z':
+                lit1=ord(lit)+(ord(keyword[i])-65)
+                if lit1>ord('Z'):
+                    lit1-=26
+            elif 'a'<=keyword[i]<='z':
+                lit1=ord(lit)+(ord(keyword[i])-97)
+                if lit1>ord('Z'):
+                    lit1-=26
+        if 'a'<=lit<='z':
+            if i>len(keyword)-1:
+                i=0
+            if 'A'<=keyword[i]<='Z':
+                lit1=ord(lit)+(ord(keyword[i])-65)
+                if lit1>ord('z'):
+                    lit1-=26
+            elif 'a'<=keyword[i]<='z':
+                lit1=ord(lit)+(ord(keyword[i])-97)
+                if lit1>ord('z'):
+                    lit1-=26
+        i+=1
+        ciphertext+=chr(lit1)
     return ciphertext
 
 
