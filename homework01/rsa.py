@@ -1,4 +1,5 @@
 import random
+import math
 
 
 def is_prime(n):
@@ -12,7 +13,13 @@ def is_prime(n):
     False
     """
     # PUT YOUR CODE HERE
-    pass
+    flag=False
+    f=int(math.sqrt(n)+1)
+    for i in range (2,f:
+        if (n%i==0): 
+            flag=True
+            break
+    return flag
 
 
 def gcd(a, b):
