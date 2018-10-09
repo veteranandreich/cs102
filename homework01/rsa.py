@@ -1,5 +1,4 @@
 import random
-import math
 
 
 def is_prime(n):
@@ -13,11 +12,11 @@ def is_prime(n):
     False
     """
     # PUT YOUR CODE HERE
-    flag=False
-    f=int(math.sqrt(n)+1)
-    for i in range (2,f:
+    flag=True
+    f=int(n**0.5+1)
+    for i in range (2,f):
         if (n%i==0): 
-            flag=True
+            flag=False
             break
     return flag
 
@@ -47,8 +46,25 @@ def multiplicative_inverse(e, phi):
     23
     """
     # PUT YOUR CODE HERE
-    pass
-
+    rev=phi
+    phi=e
+    e=rev
+    tabl = []
+    tabl.append([e, phi, e % phi, e // phi])
+    while (e % phi != 0):
+        c = e % phi
+        e = phi
+        phi = c
+        tabl.append([e, phi, e % phi, e // phi])
+    tabl[-1].extend([0, 1])
+    i = -1
+    while tabl[0][0] != tabl[i][0]:
+        i -= 1
+        x = tabl[i + 1][5]
+        y = tabl[i + 1][4] - tabl[i + 1][5] * tabl[i][3]
+        tabl[i].extend([x, y])
+    d=tabl[0][-1]%tabl[0][0]
+    return d
 
 def generate_keypair(p, q):
     if not (is_prime(p) and is_prime(q)):
