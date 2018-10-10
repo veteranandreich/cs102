@@ -21,8 +21,18 @@ func EncryptCaesar(plaintext string, shift int) string {
 
 func DecryptCaesar(ciphertext string, shift int) string {
 	var plaintext string
-
+	var symbol int
 	// PUT YOUR CODE HERE
-
+	plaintext=""
+	for i:=0; i<len(ciphertext);i++{
+		symbol=int(ciphertext[i])
+		if (int('A')<=symbol)&&(int('Z')>=symbol) || (int('a')<=symbol)&&(int('z')>=symbol){
+			symbol-=shift%26
+		}
+		if (symbol<int('A')) || (symbol<int('a')) && (symbol>int('Z')){
+			symbol+=26
+		}
+		plaintext+=string(symbol)
+	}
 	return plaintext
 }
