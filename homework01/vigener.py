@@ -76,3 +76,5 @@ def decrypt_vigenere(ciphertext, keyword):
         i += 1
         plaintext += chr(lit1)
     return plaintext
+
+print(encrypt_vigenere("a","c"))

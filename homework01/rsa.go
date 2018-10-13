@@ -1,10 +1,10 @@
 package rsa
 
 import (
-    "math"
-    "math/rand"
-    "math/big"
     "errors"
+    "math"
+    "math/big"
+    "math/rand"
 )
 
 type Key struct {
@@ -19,16 +19,55 @@ type KeyPair struct {
 
 func isPrime(n int) bool {
     // PUT YOUR CODE HERE
+    flag:=true
+    f:=int(math.Sqrt(float64(n))+1)
+    for i:=2; i<f; i++{
+        if (n%i==0){
+            flag=false
+            break
+        }
+    }
+    return flag
 }
 
 
 func gcd(a int, b int) int {
     // PUT YOUR CODE HERE
+    for (a!=0) && (b!=0) {
+        if (a > b) {
+            a = a % b
+        } else {
+            b = b % a
+        }
+    }
+    c:=a+b
+    return c
 }
 
 
 func multiplicativeInverse(e int, phi int) int {
     // PUT YOUR CODE HERE
+    var tabl [][]int
+    row := []int{phi, e, phi % e, phi / e, -1, -1}
+    tabl=append(tabl,row)
+    for i:=1;phi%e!=0;i++{
+        c:=phi%e
+        phi=e
+        e=c
+        row := []int{phi, e, phi % e, phi / e, -1, -1}
+        tabl=append(tabl,row)
+    }
+    tabl[len(tabl)-1][4]=0
+    tabl[len(tabl)-1][5]=1
+    for i := len(tabl)-2; i >= 0; i-- {
+        tabl[i][4] = tabl[i+1][5]
+        tabl[i][5] = tabl[i+1][4] - tabl[i+1][5]*tabl[i][3]
+    }
+    d:=tabl[0][5]%tabl[0][0]
+    if d<0{
+        d+=tabl[0][0]
+    }
+    return d
 }
 
 
@@ -41,9 +80,11 @@ func GenerateKeypair(p int, q int) (KeyPair, error) {
 
     // n = pq
     // PUT YOUR CODE HERE
+    n:=p*q
 
     // phi = (p-1)(q-1)
     // PUT YOUR CODE HERE
+    phi:= (p-1)*(q-1)
 
     e := rand.Intn(phi - 1) + 1
     g := gcd(e, phi)
