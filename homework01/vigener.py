@@ -7,7 +7,6 @@ def encrypt_vigenere(plaintext, keyword):
     >>> encrypt_vigenere("ATTACKATDAWN", "LEMON")
     'LXFOPVEFRNHR'
     """
-    # PUT YOUR CODE HERE
     i = 0
     ciphertext = ''
     for lit in plaintext:
@@ -36,7 +35,6 @@ def decrypt_vigenere(ciphertext, keyword):
     >>> decrypt_vigenere("LXFOPVEFRNHR", "LEMON")
     'ATTACKATDAWN'
     """
-    # PUT YOUR CODE HERE
     i = 0
     plaintext = ''
     for lit in ciphertext:
