@@ -11,14 +11,11 @@ def is_prime(n):
     >>> is_prime(8)
     False
     """
-    # PUT YOUR CODE HERE
-    flag=True
-    f=int(n**0.5+1)
-    for i in range (2,f):
-        if (n%i==0): 
-            flag=False
-            break
-    return flag
+    f = int(n**0.5+1)
+    for i in range(2, f):
+        if (n % i == 0):
+            return False
+    return True
 
 
 def gcd(a, b):
@@ -29,13 +26,12 @@ def gcd(a, b):
     >>> gcd(3, 7)
     1
     """
-    # PUT YOUR CODE HERE
-    while a!=0 and b!=0:
+    while a != 0 and b != 0:
         if a > b:
             a = a % b
         else:
             b = b % a
-    return(a+b)
+    return a + b
 
 
 def multiplicative_inverse(e, phi):
@@ -45,10 +41,7 @@ def multiplicative_inverse(e, phi):
     >>> multiplicative_inverse(7, 40)
     23
     """
-    # PUT YOUR CODE HERE
-    rev=phi
-    phi=e
-    e=rev
+    phi, e = e, phi
     tabl = []
     tabl.append([e, phi, e % phi, e // phi])
     while (e % phi != 0):
@@ -63,35 +56,26 @@ def multiplicative_inverse(e, phi):
         x = tabl[i + 1][5]
         y = tabl[i + 1][4] - tabl[i + 1][5] * tabl[i][3]
         tabl[i].extend([x, y])
-    d=tabl[0][-1]%tabl[0][0]
+    d = tabl[0][-1] % tabl[0][0]
     return d
+
 
 def generate_keypair(p, q):
     if not (is_prime(p) and is_prime(q)):
         raise ValueError('Both numbers must be prime.')
     elif p == q:
         raise ValueError('p and q cannot be equal')
-
-    # n = pq
-    # PUT YOUR CODE HERE
-    n=p*q
-
-    # phi = (p-1)(q-1)
-    # PUT YOUR CODE HERE
-    phi=(p-1)*(q-1)
-
+    n = p*q
+    phi = (p-1)*(q-1)
     # Choose an integer e such that e and phi(n) are coprime
     e = random.randrange(1, phi)
-
     # Use Euclid's Algorithm to verify that e and phi(n) are comprime
     g = gcd(e, phi)
     while g != 1:
         e = random.randrange(1, phi)
         g = gcd(e, phi)
-
     # Use Extended Euclid's Algorithm to generate the private key
     d = multiplicative_inverse(e, phi)
-
     # Return public and private keypair
     # Public key is (e, n) and private key is (d, n)
     return ((e, n), (d, n))
