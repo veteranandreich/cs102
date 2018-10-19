@@ -15,12 +15,10 @@ def encrypt_vigenere(plaintext, keyword):
                 i = 0
             if 'A' <= keyword[i] <= 'Z':
                 lit1 = ord(lit) + (ord(keyword[i])-65)
-                if lit1 > ord('Z'):
-                    lit1 -= 26
             elif 'a' <= keyword[i] <= 'z':
-                lit1 = ord(lit) + (ord(keyword[i])-97)
-                if ord('Z') < lit1 < ord('a') or lit1 > ord('z'):
-                    lit1 -= 26
+            	lit1 = ord(lit) + (ord(keyword[i])-97)
+            if 'A' <= lit <= 'Z' and lit1 > ord('Z') or 'a' <= lit <= 'z' and lit1 > ord('z'):
+            	lit1 -= 26
         i += 1
         ciphertext += chr(lit1)
     return ciphertext
@@ -43,12 +41,10 @@ def decrypt_vigenere(ciphertext, keyword):
                 i = 0
             if 'A' <= keyword[i] <= 'Z':
                 lit1 = ord(lit) - (ord(keyword[i]) - 65)
-                if lit1 < ord('A'):
-                    lit1 += 26
             elif 'a' <= keyword[i] <= 'z':
                 lit1 = ord(lit) - (ord(keyword[i]) - 97)
-                if lit1 < ord('A') or ord('Z') < lit1 < ord('a'):
-                    lit1 += 26
+            if 'A' <= lit <= 'Z' and lit1 < ord('A') or 'a' <= lit <= 'z' and lit1 < ord('a'):
+            	lit1 += 26
         i += 1
         plaintext += chr(lit1)
     return plaintext

@@ -18,16 +18,13 @@ type KeyPair struct {
 }
 
 func isPrime(n int) bool {
-    // PUT YOUR CODE HERE
-    flag:=true
     f:=int(math.Sqrt(float64(n))+1)
     for i:=2; i<f; i++{
         if (n%i==0){
-            flag=false
-            break
+            return false
         }
     }
-    return flag
+    return true
 }
 
 
@@ -121,4 +118,7 @@ func Decrypt(pk Key, cipher []int) string {
         plaintext += string(rune(int(n.Int64())))
     }
     return plaintext
+}
+func main(){
+    println(isPrime(0))
 }

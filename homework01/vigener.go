@@ -1,28 +1,28 @@
 package vigenere
 
+
 func EncryptVigenere(plaintext string, keyword string) string {
 	var ciphertext string
-
-	// PUT YOUR CODE HERE
 
 	var i,j int
 	i=0
 	for j=0; j<len(plaintext);j++{
-		var let int
-		let=int(plaintext[j])
+		let:=int(plaintext[j])
+		comp:=int(plaintext[j])
 		if i>=len(keyword){
 			i=0
 		}
-		if (int('A') <= let) && (let <= int('Z')) || (int('a') <= let && let <= int('z')){
-			if (int('A') <= int(keyword[i])) && (int(keyword[i])<=int('Z')) {
+		if (int('A') <= let) && (let <= int('Z')) || ((int('a') <= let) && (let <= int('z'))) {
+			if (int('A') <= int(keyword[i])) && (int(keyword[i]) <= int('Z')) {
 				let = let + int(keyword[i]) - int('A')
-			}else{
+			}
+			if (int('a') <= int(keyword[i])) && (int(keyword[i]) <= int('z')) {
 				let = let + int(keyword[i]) - int('a')
 			}
 		}
-		if (int('Z')<let) && (int('a')>let) || (int('z')<let){
-			let-=26
-		}
+			if (int('A') <= comp) && (comp <= int('Z') && (int('Z') < let)) || (int('a') <= comp) && (comp <= int('z') && (int('z') < let)){
+				let-=26
+			}
 		i+=1
 		ciphertext+=string(let)
 	}
@@ -33,25 +33,24 @@ func EncryptVigenere(plaintext string, keyword string) string {
 func DecryptVigenere(ciphertext string, keyword string) string {
 	var plaintext string
 
-	// PUT YOUR CODE HERE
-
 	var i,j int
 	i=0
 	for j=0; j<len(ciphertext);j++ {
-		var let int
-		let = int(ciphertext[j])
-		if i >= len(keyword) {
-			i = 0
-		}
+		let := int(ciphertext[j])
+		comp := int(ciphertext[j])
 		if (int('A') <= let) && (let <= int('Z')) || (int('a') <= let && let <= int('z')) {
+			if i >= len(keyword) {
+				i = 0
+			}
 			if (int('A') <= int(keyword[i])) && (int(keyword[i]) <= int('Z')) {
 				let = let - int(keyword[i]) + int('A')
-			} else {
+			}
+			if (int('a') <= int(keyword[i])) && (int(keyword[i]) <= int('z')) {
 				let = let - int(keyword[i]) + int('a')
 			}
-		}
-		if (int('Z') < let) && (int('a') > let) || (int('A') > let) {
-			let += 26
+			if (int('A') <= comp) && (comp <= int('Z') && (int('A') > let)) || (int('a') <= comp) && (comp <= int('z') && (int('a') > let)) {
+				let += 26
+			}
 		}
 		i += 1
 
