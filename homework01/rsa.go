@@ -29,7 +29,6 @@ func isPrime(n int) bool {
 
 
 func gcd(a int, b int) int {
-    // PUT YOUR CODE HERE
     for (a!=0) && (b!=0) {
         if (a > b) {
             a = a % b
@@ -43,7 +42,6 @@ func gcd(a int, b int) int {
 
 
 func multiplicativeInverse(e int, phi int) int {
-    // PUT YOUR CODE HERE
     var tabl [][]int
     row := []int{phi, e, phi % e, phi / e, -1, -1}
     tabl=append(tabl,row)
@@ -74,15 +72,8 @@ func GenerateKeypair(p int, q int) (KeyPair, error) {
     } else if  p == q {
         return KeyPair{}, errors.New("p and q can't be equal.")
     }
-
-    // n = pq
-    // PUT YOUR CODE HERE
     n:=p*q
-
-    // phi = (p-1)(q-1)
-    // PUT YOUR CODE HERE
     phi:= (p-1)*(q-1)
-
     e := rand.Intn(phi - 1) + 1
     g := gcd(e, phi)
     for g != 1 {
@@ -118,7 +109,4 @@ func Decrypt(pk Key, cipher []int) string {
         plaintext += string(rune(int(n.Int64())))
     }
     return plaintext
-}
-func main(){
-    println(isPrime(0))
 }
