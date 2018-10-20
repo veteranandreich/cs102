@@ -24,7 +24,7 @@ def group(values, n):
     >>> group([1,2,3,4,5,6,7,8,9], 3)
     [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
     """
-    a = [values[i:i+n] for i in range(0, len(values), 3)]
+    a = [values[i:i+n] for i in range(0, len(values), n)]
     return(a)
 
 
@@ -37,7 +37,8 @@ def get_row(values, pos):
     >>> get_row([['1', '2', '3'], ['4', '5', '6'], ['.', '8', '9']], (2, 0))
     ['.', '8', '9']
     """
-    pass
+    row,_=pos
+    return (values[row])
 
 
 def get_col(values, pos):
@@ -49,7 +50,9 @@ def get_col(values, pos):
     >>> get_col([['1', '2', '3'], ['4', '5', '6'], ['.', '8', '9']], (0, 2))
     ['3', '6', '9']
     """
-    pass
+    _,column=pos
+    a = [values[i][column] for i in range(len(values))]
+    return(a)
 
 
 def get_block(values, pos):
@@ -62,7 +65,16 @@ def get_block(values, pos):
     >>> get_block(grid, (8, 8))
     ['2', '8', '.', '.', '.', '5', '.', '7', '9']
     """
-    pass
+    row,column=pos
+    subrow = row // 3 * 3
+    subcol = col // 3 * 3
+    a=[]
+    for i in range(3):
+        for j in range(3):
+            a.append(values[subrow * 3 + i][subcol * 3 + j])
+    return (a)
+
+
 
 
 def find_empty_positions(grid):
@@ -141,3 +153,4 @@ if __name__ == '__main__':
         display(grid)
         solution = solve(grid)
         display(solution)
+
