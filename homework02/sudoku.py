@@ -67,11 +67,11 @@ def get_block(values, pos):
     """
     row,column=pos
     subrow = row // 3 * 3
-    subcol = col // 3 * 3
+    subcol = column // 3 * 3
     a=[]
     for i in range(3):
         for j in range(3):
-            a.append(values[subrow * 3 + i][subcol * 3 + j])
+            a.append(values[subrow + i][subcol + j])
     return (a)
 
 
@@ -153,4 +153,3 @@ if __name__ == '__main__':
         display(grid)
         solution = solve(grid)
         display(solution)
-
