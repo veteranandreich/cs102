@@ -1,3 +1,7 @@
+import multiprocessing
+import random
+
+
 def read_sudoku(filename):
     """ Прочитать Судоку из указанного файла """
     digits = [c for c in open(filename).read() if c in '123456789.']
@@ -38,7 +42,7 @@ def get_row(values, pos):
     ['.', '8', '9']
     """
     row, _ = pos
-    return (values[row])
+    return values[row]
 
 
 def get_col(values, pos):
@@ -52,7 +56,7 @@ def get_col(values, pos):
     """
     _, column = pos
     a = [values[i][column] for i in range(len(values))]
-    return (a)
+    return a
 
 
 def get_block(values, pos):
@@ -72,7 +76,7 @@ def get_block(values, pos):
     for i in range(3):
         for j in range(3):
             a.append(values[subrow + i][subcol + j])
-    return (a)
+    return a
 
 
 def find_empty_positions(grid):
@@ -86,8 +90,8 @@ def find_empty_positions(grid):
     """
     for row in range(len(grid)):
         for column in range(len(grid)):
-            if grid[row][column]=='.':
-                return (row,column)
+            if grid[row][column] == '.':
+                return (row, column)
     return None
 
 
@@ -101,7 +105,10 @@ def find_possible_values(grid, pos):
     >>> values == {'2', '5', '9'}
     True
     """
-    pass
+    a = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
+    result = set(i for i in a if
+                 ((i not in get_row(grid, pos)) and (i not in get_col(grid, pos)) and (i not in get_block(grid, pos))))
+    return result
 
 
 def solve(grid):
@@ -116,13 +123,41 @@ def solve(grid):
     >>> solve(grid)
     [['5', '3', '4', '6', '7', '8', '9', '1', '2'], ['6', '7', '2', '1', '9', '5', '3', '4', '8'], ['1', '9', '8', '3', '4', '2', '5', '6', '7'], ['8', '5', '9', '7', '6', '1', '4', '2', '3'], ['4', '2', '6', '8', '5', '3', '7', '9', '1'], ['7', '1', '3', '9', '2', '4', '8', '5', '6'], ['9', '6', '1', '5', '3', '7', '2', '8', '4'], ['2', '8', '7', '4', '1', '9', '6', '3', '5'], ['3', '4', '5', '2', '8', '6', '1', '7', '9']]
     """
-    pass
+    pos = find_empty_positions(grid)
+    if pos is None:
+        return grid
+    row, column = pos
+    for dig in find_possible_values(grid, pos):
+        grid[row][column] = dig
+        solution = solve(grid)
+        if solution:
+            return solution
+    grid[row][column] = '.'
+    return None
 
 
 def check_solution(solution):
     """ Если решение solution верно, то вернуть True, в противном случае False """
     # TODO: Add doctests with bad puzzles
-    pass
+    a = {'1', '2', '3', '4', '5', '6', '7', '8', '9'}
+
+    for row in range(len(solution)):
+        row_values = set(get_row(solution, (row, 0)))
+        if row_values != a:
+            return False
+
+    for column in range(len(solution)):
+        column_values = set(get_row(solution, (0, column)))
+        if column_values != a:
+            return False
+
+    for row in (0, 3, 6):
+        for column in (0, 3, 6):
+            block = set(get_block(solution, (row, column)))
+            if block != set('123456789'):
+                return False
+
+    return True
 
 
 def generate_sudoku(N):
@@ -146,12 +181,25 @@ def generate_sudoku(N):
     >>> check_solution(solution)
     True
     """
-    pass
+    matrix = solve([['.'] * 9 for _ in range(9)])
+    N = 81 - min(81, max(0, N))
+    while N > 0:
+        row = random.randint(0, 8)
+        column = random.randint(0, 8)
+        if matrix[row][column] != '.':
+            matrix[row][column] = '.'
+            N -= 1
+    return matrix
+
+
+def run_solve(fname):
+    grid = read_sudoku(fname)
+    display(grid)
+    solution = solve(grid)
+    display(solution)
 
 
 if __name__ == '__main__':
     for fname in ['puzzle1.txt', 'puzzle2.txt', 'puzzle3.txt']:
-        grid = read_sudoku(fname)
-        display(grid)
-        solution = solve(grid)
-        display(solution)
+        p = multiprocessing.Process(target=run_solve, args=(fname,))
+        p.start()
