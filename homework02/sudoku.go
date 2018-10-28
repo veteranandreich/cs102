@@ -35,23 +35,47 @@ func display(grid [][]byte) {
 }
 
 func group(values []byte, n int) [][]byte {
-	// PUT YOUR CODE HERE
+	var a[][]byte
+	for i:=0; i<len(values); i+=n {
+		a=append(a,values[i:i+n])
+	}
+	return a
 }
 
 func getRow(grid [][]byte, row int) []byte {
-	// PUT YOUR CODE HERE
+	return grid[row]
 }
 
 func getCol(grid [][]byte, col int) []byte {
-	// PUT YOUR CODE HERE
+	var column[]byte
+	for i:=0; i<len(grid); i++ {
+		column=append(column,grid[i][col])
+	}
+	return column
 }
 
 func getBlock(grid [][]byte, row int, col int) []byte {
-	// PUT YOUR CODE HERE
+	var a[]byte
+	subrow := row // 3 * 3
+    subcol := col // 3 * 3
+    for i:=0; i<3; i++ {
+    	for j:=0; j<3; j++ {
+    		a=append(a,grid[subrow+i][subcol+j])
+    	}
+    }
+    return a
 }
 
 func findEmptyPosition(grid [][]byte) (int, int) {
-	// PUT YOUR CODE HERE
+	for row:=0;row<len(grid);row++{
+		for col:=0;col<len(grid);col++{
+			if grid[row][col] == '.' {
+				return row, col
+			}
+		}
+
+	}
+	return -1,-1
 }
 
 func contains(values []byte, search byte) bool {
@@ -64,19 +88,50 @@ func contains(values []byte, search byte) bool {
 }
 
 func findPossibleValues(grid [][]byte, row int, col int) []byte {
-	// PUT YOUR CODE HERE
+	var Values []byte
+	a:=[]byte("123456789")
+	row1:=getRow(grid, row)
+	col1:=getCol(grid, col)
+	block1:=getBlock(grid,row,col)
+	for i:=0;i<9;i++{
+		flag:=false
+		for j:=0;j<9;j++{
+			if (a[i]==row1[j])||(a[i]==col1[j])||(a[i]==block1[j]) {
+				flag=true
+			}
+		}
+		if flag==false {
+			Values = append(Values,a[i])
+			}
+	}
+	return Values
 }
 
 func solve(grid [][]byte) ([][]byte, bool) {
-	// PUT YOUR CODE HERE
+	row,col:=findEmptyPosition(grid)
+	if (row == -1){
+		return grid, true
+	}
+	for _,value:=range(findPossibleValues(grid,row,col)){
+		grid[row][col] = value
+		solution, answ:= solve(grid)
+		if answ{
+			return solution,answ
+		}
+	}
+	grid[row][col]= '.'
+	var none[][]byte
+	return none,false
 }
 
 func checkSolution(grid [][]byte) bool {
 	// PUT YOUR CODE HERE
+	return 0
 }
 
 func generateSudoku(N int) [][]byte {
 	// PUT YOUR CODE HERE
+	return 0
 }
 
 func main() {
