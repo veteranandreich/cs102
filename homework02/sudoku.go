@@ -3,8 +3,10 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
+	"math/rand"
 	"path/filepath"
 	"sort"
+	"time"
 )
 
 func readSudoku(filename string) ([][]byte, error) {
@@ -56,15 +58,16 @@ func getCol(grid [][]byte, col int) []byte {
 }
 
 func getBlock(grid [][]byte, row int, col int) []byte {
-	var a[]byte
-	subrow := row // 3 * 3
-    subcol := col // 3 * 3
+	var block_val[]byte
+	var subrow,subcol int
+	subrow = row / 3 * 3
+    subcol = col / 3 * 3
     for i:=0; i<3; i++ {
     	for j:=0; j<3; j++ {
-    		a=append(a,grid[subrow+i][subcol+j])
+    		block_val=append(block_val,grid[subrow+i][subcol+j])
     	}
     }
-    return a
+    return block_val
 }
 
 func findEmptyPosition(grid [][]byte) (int, int) {
@@ -129,7 +132,7 @@ func checkSolution(grid [][]byte) bool {
 	var int_val []int
 	a:=[9]int{1,2,3,4,5,6,7,8,9}
 
-	for _,row := range(len(grid)) {
+	for row:=0;row<len(grid);row++ {
 		var row_values []byte
 		row_values = getRow(grid, row)
 		for i := 0; i < len(row_values); i++ {
@@ -142,21 +145,33 @@ func checkSolution(grid [][]byte) bool {
 			}
 		}
 	}
-
-	for _,col := range(len(grid)){
+	int_val = nil
+	for col := 0;col<len(grid);col++{
 		var col_values[]byte
 		col_values=getCol(grid,col)
-		if col_values!=a{
-			return false
+		for i := 0; i < len(col_values); i++ {
+			int_val = append(int_val, int(col_values[i]))
+		}
+		sort.Ints(int_val)
+		for i := 0; i < len(int_val); i++ {
+			if int_val[i] != a[i] {
+				return false
+			}
 		}
 	}
-
+	int_val = nil
 	for row:=0; row<=6; row+=3{
 		for col:=0; col<=6; col+=3{
 			var block[]byte
 			block=getBlock(grid,row,col)
-			if block!=a{
-				return false
+			for i := 0; i < len(block); i++ {
+				int_val = append(int_val, int(block[i]))
+			}
+			sort.Ints(int_val)
+			for i := 0; i < len(int_val); i++ {
+				if int_val[i] != a[i] {
+					return false
+				}
 			}
 		}
 	}
@@ -165,15 +180,26 @@ func checkSolution(grid [][]byte) bool {
 
 func generateSudoku(N int) [][]byte {
 	var matrix[][]byte
+	a:=[]byte(".........")
 	for i:=0; i<9; i++{
-		matrix=append(matrix,['.........'])
+		matrix=append(matrix,a)
 	}
+	matrix,_=solve(matrix)
 	if N>81{
 		N=0
 	}else{
 		N=81-N
 	}
-
+	rand.Seed(time.Now().UnixNano())
+	for N>0{
+		row:=rand.Intn(8)
+		col:=rand.Intn(8)
+		if matrix[row][col]!='.'{
+			matrix[row][col]='.'
+		}
+		N-=1
+	}
+	return matrix
 }
 
 func main() {
