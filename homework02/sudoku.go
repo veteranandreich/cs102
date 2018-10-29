@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"path/filepath"
+	"sort"
 )
 
 func readSudoku(filename string) ([][]byte, error) {
@@ -125,13 +126,54 @@ func solve(grid [][]byte) ([][]byte, bool) {
 }
 
 func checkSolution(grid [][]byte) bool {
-	// PUT YOUR CODE HERE
-	return 0
+	var int_val []int
+	a:=[9]int{1,2,3,4,5,6,7,8,9}
+
+	for _,row := range(len(grid)) {
+		var row_values []byte
+		row_values = getRow(grid, row)
+		for i := 0; i < len(row_values); i++ {
+			int_val = append(int_val, int(row_values[i]))
+		}
+		sort.Ints(int_val)
+		for i := 0; i < len(int_val); i++ {
+			if int_val[i] != a[i] {
+				return false
+			}
+		}
+	}
+
+	for _,col := range(len(grid)){
+		var col_values[]byte
+		col_values=getCol(grid,col)
+		if col_values!=a{
+			return false
+		}
+	}
+
+	for row:=0; row<=6; row+=3{
+		for col:=0; col<=6; col+=3{
+			var block[]byte
+			block=getBlock(grid,row,col)
+			if block!=a{
+				return false
+			}
+		}
+	}
+	return true
 }
 
 func generateSudoku(N int) [][]byte {
-	// PUT YOUR CODE HERE
-	return 0
+	var matrix[][]byte
+	for i:=0; i<9; i++{
+		matrix=append(matrix,['.........'])
+	}
+	if N>81{
+		N=0
+	}else{
+		N=81-N
+	}
+
 }
 
 func main() {
