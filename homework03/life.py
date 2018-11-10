@@ -24,7 +24,6 @@ class GameOfLife:
         self.speed = speed
 
     def draw_grid(self):
-        """ Отрисовать сетку """
         for x in range(0, self.width, self.cell_size):
             pygame.draw.line(self.screen, pygame.Color('black'),
                              (x, 0), (x, self.height))
@@ -33,16 +32,13 @@ class GameOfLife:
                              (0, y), (self.width, y))
 
     def run(self):
-        """ Запустить игру """
         pygame.init()
         clock = pygame.time.Clock()
         pygame.display.set_caption('Game of Life')
         self.screen.fill(pygame.Color('white'))
 
         # Создание списка клеток
-        # PUT YOUR CODE HERE
         self.clist = self.cell_list()
-
         running = True
         while running:
             for event in pygame.event.get():
