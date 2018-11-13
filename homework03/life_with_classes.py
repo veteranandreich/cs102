@@ -6,7 +6,7 @@ from copy import deepcopy
 
 class GameOfLife:
 
-    def __init__(self, width=640, height=480, cell_size=10, speed=10):
+    def __init__(self, width=640, height=480, cell_size=10, speed=10) -> None:
         self.width = width
         self.height = height
         self.cell_size = cell_size
@@ -23,7 +23,7 @@ class GameOfLife:
         # Скорость протекания игры
         self.speed = speed
 
-    def draw_grid(self):
+    def draw_grid(self) -> None:
         """ Отрисовать сетку """
         for x in range(0, self.width, self.cell_size):
             pygame.draw.line(self.screen, pygame.Color('black'),
@@ -32,7 +32,7 @@ class GameOfLife:
             pygame.draw.line(self.screen, pygame.Color('black'),
                              (0, y), (self.width, y))
 
-    def run(self):
+    def run(self) -> None:
         """ Запустить игру """
         pygame.init()
         clock = pygame.time.Clock()
@@ -67,7 +67,7 @@ class GameOfLife:
 
 class Cell:
 
-    def __init__(self, row: int, col: int, state=False):
+    def __init__(self, row: int, col: int, state=False) -> None:
         self.state = state
         self.row = row
         self.col = col
@@ -78,7 +78,7 @@ class Cell:
 
 class CellList:
 
-    def __init__(self, nrows: int, ncols: int, randomize=False):
+    def __init__(self, nrows: int, ncols: int, randomize=False) -> None:
         self.nrows = nrows
         self.ncols = ncols
         self.grid = []
@@ -96,7 +96,7 @@ class CellList:
                     line.append(Cell(st, elem, False))
                 self.grid.append(line)
 
-    def get_neighbours(self, cell) -> list:
+    def get_neighbours(self, cell: Cell) -> list:
         neighbours = []
         col, row = cell.col, cell.row
         for st in range(row - 1, row + 2):
@@ -105,7 +105,7 @@ class CellList:
                     neighbours.append(self.grid[st][elem])
         return neighbours
 
-    def update(self):
+    def update(self) -> None:
         # доделать возможность итерации по self
         new_clist = deepcopy(self.grid)
         for cell in self:
@@ -115,13 +115,12 @@ class CellList:
             elif neigh == 3:
                 new_clist[cell.row][cell.col].state = 1
         self.grid = new_clist
-        return self
 
     def __iter__(self):
         self.st, self.elem = 0, 0
         return self
 
-    def __next__(self):
+    def __next__(self) -> Cell:
         if self.st < self.nrows:
             cell = self.grid[self.st][self.elem]
             self.elem += 1
