@@ -1,7 +1,7 @@
 import pygame
 from pygame.locals import *
 import random
-from copy import deepcopy
+import copy
 
 
 class GameOfLife:
@@ -32,6 +32,19 @@ class GameOfLife:
             pygame.draw.line(self.screen, pygame.Color('black'),
                              (0, y), (self.width, y))
 
+    def draw_cell_list(self, cell_list: "CellList") -> None:
+        x = 0
+        y = 0
+        for cell in cell_list:
+            if cell.is_alive():
+                pygame.draw.rect(self.screen, pygame.Color('green'), [x, y, self.cell_size, self.cell_size])
+            else:
+                pygame.draw.rect(self.screen, pygame.Color('white'), [x, y, self.cell_size, self.cell_size])
+            x += self.cell_size
+            if x >= self.width:
+                y += self.cell_size
+                x = 0
+
     def run(self) -> None:
         """ Запустить игру """
         pygame.init()
@@ -48,17 +61,7 @@ class GameOfLife:
             self.draw_grid()
             # Отрисовка списка клеток
             # Выполнение одного шага игры (обновление состояния ячеек)
-            x = 0
-            y = 0
-            for cell in cell_list:
-                if cell.is_alive():
-                    pygame.draw.rect(self.screen, pygame.Color('green'), [x, y, self.cell_size, self.cell_size])
-                else:
-                    pygame.draw.rect(self.screen, pygame.Color('white'), [x, y, self.cell_size, self.cell_size])
-                x += self.cell_size
-                if x >= self.width:
-                    y += self.cell_size
-                    x = 0
+            self.draw_cell_list(cell_list)
             cell_list.update()
             pygame.display.flip()
             clock.tick(self.speed)
@@ -82,19 +85,14 @@ class CellList:
         self.nrows = nrows
         self.ncols = ncols
         self.grid = []
-
-        if randomize:
-            for st in range(nrows):
-                line = []
-                for elem in range(ncols):
+        for st in range(nrows):
+            line = []
+            for elem in range(ncols):
+                if randomize:
                     line.append(Cell(st, elem, random.randint(0, 1)))
-                self.grid.append(line)
-        else:
-            for st in range(nrows):
-                line = []
-                for elem in range(ncols):
+                else:
                     line.append(Cell(st, elem, False))
-                self.grid.append(line)
+            self.grid.append(line)
 
     def get_neighbours(self, cell: Cell) -> list:
         neighbours = []
@@ -105,17 +103,18 @@ class CellList:
                     neighbours.append(self.grid[st][elem])
         return neighbours
 
-    def update(self) -> None:
-        new_clist = deepcopy(self.grid)
+    def update(self):
+        new_clist = copy.deepcopy(self.grid)
         for cell in self:
             neigh = sum(i.is_alive() for i in self.get_neighbours(cell))
             if neigh != 2 and neigh != 3:
-                new_clist[cell.row][cell.col].state = 0
+                new_clist[cell.row][cell.col].state = False
             elif neigh == 3:
-                new_clist[cell.row][cell.col].state = 1
+                new_clist[cell.row][cell.col].state = True
         self.grid = new_clist
+        return self
 
-    def __iter__(self) -> "CellList":
+    def __iter__(self):
         self.st, self.elem = 0, 0
         return self
 
@@ -145,30 +144,31 @@ class CellList:
 
     @classmethod
     def from_file(cls, filename: str) -> "CellList":
-        grid = []
-        f = open(filename, 'r')
-        row = 0
-        col = 0
-        ncol = 0
-        for st in f:
-            line = []
-            for i in st:
-                if i == '0':
-                    line.append(Cell(row, col, False))
-                if i == '1':
-                    line.append(Cell(row, col, True))
-                col += 1
-            row += 1
-            ncol = col
+        with open(filename, 'r') as file:
+            grid = []
+            f = file
+            row = 0
             col = 0
-            grid.append(line)
-        for st in range(row):
-            for elem in range(ncol):
-                grid[st][elem].row = st
-                grid[st][elem].col = elem
-        cell_list = CellList(row, ncol, False)
-        cell_list.grid = grid
-        return cell_list
+            ncol = 0
+            for st in f:
+                line = []
+                for c in st:
+                    if c == '0':
+                        line.append(Cell(row, col, False))
+                    if c == '1':
+                        line.append(Cell(row, col, True))
+                    col += 1
+                ncol = col
+                col = 0
+                grid.append(line)
+            for line in grid:
+                for cell in line:
+                    cell.row = row
+                row += 1
+
+            cell_list = CellList(row, ncol, False)
+            cell_list.grid = grid
+            return cell_list
 
 
 if __name__ == '__main__':
