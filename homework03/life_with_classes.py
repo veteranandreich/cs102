@@ -106,7 +106,6 @@ class CellList:
         return neighbours
 
     def update(self) -> None:
-        # доделать возможность итерации по self
         new_clist = deepcopy(self.grid)
         for cell in self:
             neigh = sum(i.is_alive() for i in self.get_neighbours(cell))
