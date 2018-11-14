@@ -116,7 +116,7 @@ class CellList:
                 new_clist[cell.row][cell.col].state = 1
         self.grid = new_clist
 
-    def __iter__(self):
+    def __iter__(self) -> "CellList":
         self.st, self.elem = 0, 0
         return self
 
@@ -145,7 +145,7 @@ class CellList:
         return str1
 
     @classmethod
-    def from_file(cls, filename):
+    def from_file(cls, filename: str) -> "CellList":
         grid = []
         f = open(filename, 'r')
         row = 0
