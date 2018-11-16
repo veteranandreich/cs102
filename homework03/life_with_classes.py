@@ -146,11 +146,10 @@ class CellList:
     def from_file(cls, filename: str) -> "CellList":
         with open(filename, 'r') as file:
             grid = []
-            f = file
             row = 0
             col = 0
             ncol = 0
-            for st in f:
+            for st in file:
                 line = []
                 for c in st:
                     if c == '0':
