@@ -6,7 +6,7 @@ from api import get_friends
 from api_models import User
 
 
-def age_predict(user_id):
+def age_predict(user_id: int) -> int:
     """ Наивный прогноз возраста по возрасту друзей
     Возраст считается как медиана среди возраста всех друзей пользователя
     :param user_id: идентификатор пользователя
@@ -29,4 +29,4 @@ def age_predict(user_id):
                 age = d2.year - d1.year - ((d2.month, d2.day) < (d1.month, d1.day))
                 age_list.append(age)
     if age_list:
-        return median(age_list)
+        return int(median(age_list))
