@@ -6,7 +6,7 @@ from api import get_friends
 from api_models import User
 
 
-def age_predict(user_id: int) -> int:
+def age_predict(user_id: int) -> float:
     """ Наивный прогноз возраста по возрасту друзей
     Возраст считается как медиана среди возраста всех друзей пользователя
     :param user_id: идентификатор пользователя
@@ -15,7 +15,7 @@ def age_predict(user_id: int) -> int:
     assert user_id > 0, "user_id must be positive integer"
     friends = get_friends(user_id, 'bdate')
     age_list = []
-    for friend in friends['response']:
+    for friend in friends:
         person = User(**friend)
         try:
             bday = person.bdate
@@ -29,4 +29,4 @@ def age_predict(user_id: int) -> int:
                 age = d2.year - d1.year - ((d2.month, d2.day) < (d1.month, d1.day))
                 age_list.append(age)
     if age_list:
-        return int(median(age_list))
+        return float(median(age_list))

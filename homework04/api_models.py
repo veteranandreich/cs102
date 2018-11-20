@@ -4,7 +4,8 @@ from pydantic import BaseModel
 
 class BaseUser(BaseModel):
     """ Модель пользователя с базовыми полями """
-    uid: int
+    id: Optional[int]
+    uid: Optional[int]
     first_name: str
     last_name: str
     online: int

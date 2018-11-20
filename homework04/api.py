@@ -1,5 +1,4 @@
 import requests
-import random
 import time
 from datetime import datetime
 from config import VK_CONFIG as vk
@@ -21,28 +20,18 @@ def get(url: str, params={}, timeout=5, max_retries=10, backoff_factor=0.3) -> O
     :param max_retries: максимальное число повторных запросов
     :param backoff_factor: коэффициент экспоненциального нарастания задержки
     """
-    n = 0
-    delay = 0.5
-    while n < max_retries:
+    for n in range(max_retries):
         try:
-            response = requests.get(url.format(**params), timeout=(timeout, 3))
-        except requests.exceptions.ReadTimeout:
-            print('Oops. Read timeout occured')
-        except requests.exceptions.ConnectTimeout:
-            print('Oops. Connection timeout occured!')
-        except requests.exceptions.ConnectionError:
-            print('Seems like dns lookup failed..')
-        except requests.exceptions.HTTPError as err:
-            print('Oops. HTTP Error occured')
-            print('Response is: {content}'.format(content=err.response.content))
-        else:
+            response = requests.get(url, params=params, timeout=(timeout, 3))
             return response
-        delay = min(delay * backoff_factor, 10)
-        delay = delay + random.normalvariate(delay, 0.1)
-        time.sleep(delay)
+        except requests.exceptions.RequestException:
+            if n == max_retries - 1:
+                raise
+            delay = backoff_factor * 2 ** n
+            time.sleep(delay)
 
 
-def get_friends(user_id: int, fields="") -> Optional[dict]:
+def get_friends(user_id: int, fields="") -> list:
     """ Вернуть данных о друзьях пользователя
     :param user_id: идентификатор пользователя, список друзей которого нужно получить
     :param fields: список полей, которые нужно получить для каждого пользователя
@@ -50,20 +39,19 @@ def get_friends(user_id: int, fields="") -> Optional[dict]:
     assert isinstance(user_id, int), "user_id must be positive integer"
     assert isinstance(fields, str), "fields must be string"
     assert user_id > 0, "user_id must be positive integer"
-
     query_params = {
-        'domain': vk['domain'],
         'access_token': vk['access_token'],
         'user_id': user_id,
         'fields': fields,
         'version': vk['version']
     }
 
-    query = "{domain}/friends.get?access_token={access_token}&user_id={user_id}&fields={fields}&v=[version]"
+    query = "{domain}/friends.get?".format(domain=vk['domain'])
     response = get(query, query_params)
-    if response:
-        return response.json()
-    return None
+    try:
+        return response.json()['response']['items']
+    except TypeError:
+        return response.json()['response']
 
 
 def messages_get_history(user_id: int, offset=0, count=200) -> list:
@@ -132,7 +120,7 @@ def get_network(users_ids: list, as_edgelist=True) -> list:
         if user_num % 2 == 0:
             time.sleep(1)
         try:
-            friend_list = get_friends(user)['response']
+            friend_list = get_friends(user)
         except KeyError:
             continue
         else:
