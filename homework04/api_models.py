@@ -22,4 +22,4 @@ class Message(BaseModel):
     date: int
     from_id: int
     id: int
-    text: str
+    text: Optional[str]

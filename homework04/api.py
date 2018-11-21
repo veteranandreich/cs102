@@ -1,15 +1,7 @@
 import requests
 import time
-from datetime import datetime
 from config import VK_CONFIG as vk
-from config import PLOTLY_CONFIG as pl
-from api_models import Message, User
-import plotly
-import igraph
-from igraph import Graph, plot
 from typing import Optional
-
-plotly.tools.set_credentials_file(username=pl['username'], api_key=pl['api_key'])
 
 
 def get(url: str, params={}, timeout=5, max_retries=10, backoff_factor=0.3) -> Optional[requests.models.Response]:
@@ -78,38 +70,6 @@ def messages_get_history(user_id: int, offset=0, count=200) -> list:
     response = requests.get(url)
     messages = response.json()['response']['items']
     return messages
-
-
-def count_dates_from_messages(messages: list) -> list:
-    """ Получить список дат и их частот
-    :param messages: список сообщений
-    """
-    date_list = []
-    frequency = []
-    k = 0
-    for m in messages:
-        message = Message(**m)
-        date = datetime.fromtimestamp(message.date).strftime("%Y-%m-%d")
-        if date not in date_list:
-            if k:
-                frequency.append(k)
-            date_list.append(date)
-            k = 1
-        else:
-            k += 1
-    frequency.append(k)
-    freq_list = []
-    freq_list.append(date_list)
-    freq_list.append(frequency)
-    return freq_list
-
-
-def plotly_messages_freq(freq_list: list) -> None:
-    """ Построение графика с помощью Plot.ly
-    :param freq_list: список дат и их частот
-    """
-    data = [plotly.graph_objs.Scatter(x=freq_list[0], y=freq_list[1])]
-    plotly.plotly.plot(data)
 
 
 def get_network(users_ids: list, as_edgelist=True) -> list:
