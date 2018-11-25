@@ -6,24 +6,36 @@ from typing import Union, List, Tuple
 
 def get_network(users_ids: list, as_edgelist=True) -> Union[List[List[int]], List[Tuple[int, int]]]:
     user_num = 0
-    edge_list = []
-    matrix = [[0] * len(users_ids) for _ in range(len(users_ids))]
-    for user in users_ids:
-        if user_num % 2 == 0:
-            time.sleep(1)
-        try:
-            friend_list = get_friends(user)
-        except KeyError:
-            continue
-        else:
-            for friend in friend_list:
-                if friend in users_ids:
-                    edge_list.append((users_ids.index(user), users_ids.index(friend)))
-                    matrix[users_ids.index(user)][users_ids.index(friend)] = 1
-            user_num += 1
     if as_edgelist:
+        edge_list = []
+        for user in users_ids:
+            if user_num % 3 == 0:
+                time.sleep(1)
+            try:
+                friend_list = get_friends(user)
+            except KeyError:
+                continue
+            else:
+                for friend in friend_list:
+                    if friend in users_ids:
+                        edge_list.append((users_ids.index(user), users_ids.index(friend)))
+                user_num += 1
         return edge_list
-    return matrix
+    else:
+        matrix = [[0] * len(users_ids) for _ in range(len(users_ids))]
+        for user in users_ids:
+            if user_num % 3 == 0:
+                time.sleep(1)
+            try:
+                friend_list = get_friends(user)
+            except KeyError:
+                continue
+            else:
+                for friend in friend_list:
+                    if friend in users_ids:
+                        matrix[users_ids.index(user)][users_ids.index(friend)] = 1
+                user_num += 1
+        return matrix
 
 
 def plot_graph(edge_list: list, name_list=[]) -> None:

@@ -1,7 +1,8 @@
 import requests
 import time
 from config import VK_CONFIG as vk
-from typing import Optional
+from typing import Union, List, Optional
+from api_models import User, Message
 
 
 def get(url: str, params={}, timeout=5, max_retries=10, backoff_factor=0.3) -> Optional[requests.models.Response]:
@@ -23,7 +24,7 @@ def get(url: str, params={}, timeout=5, max_retries=10, backoff_factor=0.3) -> O
             time.sleep(delay)
 
 
-def get_friends(user_id: int, fields="") -> list:
+def get_friends(user_id: int, fields="") -> Union[List[User], List[int]]:
     """ Вернуть данных о друзьях пользователя
     :param user_id: идентификатор пользователя, список друзей которого нужно получить
     :param fields: список полей, которые нужно получить для каждого пользователя
@@ -41,7 +42,8 @@ def get_friends(user_id: int, fields="") -> list:
     query = "{domain}/friends.get?".format(domain=vk['domain'])
     response = get(query, query_params)
     try:
-        return response.json()['response']['items']
+        friends = [User(**friend) for friend in response.json()['response']['items']]
+        return friends
     except TypeError:
         return response.json()['response']
 
@@ -65,8 +67,14 @@ def messages_get_history(user_id: int, offset=0, count=200) -> list:
         'count': count,
         'version': vk['version']
     }
-    url = "{domain}/messages.getHistory?offset={offset}&count={count}&user_id={user_id}&" \
-          "access_token={access_token}&v={version}".format(**query_params)
-    response = requests.get(url)
-    messages = response.json()['response']['items']
-    return messages
+    messages = []
+    i = 0
+    while i < count:
+        url = "{domain}/messages.getHistory?offset={offset}&count={count}&user_id={user_id}&" \
+              "access_token={access_token}&v={version}".format(**query_params)
+        response = requests.get(url)
+        messages.extend([Message(**mes) for mes in response.json()['response']['items']])
+        i += 200
+        query_params['offset'] += i
+    return messages[:i-count]
+

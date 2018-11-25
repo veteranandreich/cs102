@@ -1,10 +1,8 @@
 from collections import Counter
 import datetime
 import plotly
-from typing import List, Tuple
-
-from api import messages_get_history
 from api_models import Message
+from typing import List, Tuple
 import config
 
 
@@ -26,23 +24,16 @@ def count_dates_from_messages(messages: List[Message]) -> Tuple[Dates, Frequenci
     """ Получить список дат и их частот
     :param messages: список сообщений
     """
-    dates = []
-    freqs = []
-    k = 0
-    for m in messages:
-        message = Message(**m)
+    c = Counter()
+    for message in messages:
         date = fromtimestamp(message.date)
-        if date not in dates:
-            if k:
-                freqs.append(k)
-            dates.append(date)
-            k = 1
-        else:
-            k += 1
-    freqs.append(k)
-    freq_tuple = (dates, freqs)
-    return freq_tuple
-
+        c[date] += 1
+    d, f = [], []
+    for tup in c.most_common():
+        d.append(tup[0])
+        f.append(tup[1])
+    a = (d, f)
+    return a
 
 def plotly_messages_freq(dates: Dates, freq: Frequencies) -> None:
     """ Построение графика с помощью Plot.ly
