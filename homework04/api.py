@@ -41,11 +41,11 @@ def get_friends(user_id: int, fields="") -> Union[List[User], List[int]]:
 
     query = "{domain}/friends.get?".format(domain=vk['domain'])
     response = get(query, query_params)
-    try:
-        friends = [User(**friend) for friend in response.json()['response']['items']]
-        return friends
-    except TypeError:
-        return response.json()['response']
+    json_doc = response.json()
+    fail = json_doc.get('error')
+    if fail:
+        raise Exception(json_doc['error']['error_msg'])
+    return json_doc['response']['items']
 
 
 def messages_get_history(user_id: int, offset=0, count=200) -> list:
@@ -70,11 +70,19 @@ def messages_get_history(user_id: int, offset=0, count=200) -> list:
     messages = []
     i = 0
     while i < count:
+        if (i / 200) % 3 == 0 and i:
+            time.sleep(1)
+        if count - i <= 200:
+            query_params['count'] = count - i
         url = "{domain}/messages.getHistory?offset={offset}&count={count}&user_id={user_id}&" \
               "access_token={access_token}&v={version}".format(**query_params)
         response = requests.get(url)
-        messages.extend([Message(**mes) for mes in response.json()['response']['items']])
+        json_doc = response.json()
+        fail = json_doc.get('error')
+        if fail:
+            raise Exception(json_doc['error']['error_msg'])
+        messages.extend(json_doc['response']['items'])
         i += 200
         query_params['offset'] += i
-    return messages[:i-count]
+    return messages
 

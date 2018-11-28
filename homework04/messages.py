@@ -28,12 +28,9 @@ def count_dates_from_messages(messages: List[Message]) -> Tuple[Dates, Frequenci
     for message in messages:
         date = fromtimestamp(message.date)
         c[date] += 1
-    d, f = [], []
-    for tup in c.most_common():
-        d.append(tup[0])
-        f.append(tup[1])
-    a = (d, f)
-    return a
+    result = list(zip(*c.most_common()))
+    return tuple((sorted(result[0]), [c[date] for date in sorted(result[0])]))
+
 
 def plotly_messages_freq(dates: Dates, freq: Frequencies) -> None:
     """ Построение графика с помощью Plot.ly
