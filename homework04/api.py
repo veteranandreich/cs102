@@ -43,9 +43,8 @@ def get_friends(user_id: int, fields="") -> Union[List[User], List[int]]:
     response = get(query, query_params)
     json_doc = response.json()
     fail = json_doc.get('error')
-    if fail:
-        raise Exception(json_doc['error']['error_msg'])
-    return json_doc['response']['items']
+    if fail != 0:
+        return json_doc['response']
 
 
 def messages_get_history(user_id: int, offset=0, count=200) -> list:

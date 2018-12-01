@@ -1,5 +1,6 @@
 from api import get_friends
 import igraph
+import time
 from igraph import Graph, plot
 from typing import Union, List, Tuple
 

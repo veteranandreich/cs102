@@ -9,7 +9,7 @@ class TestAgePredict(unittest.TestCase):
 
     def test_friends_with_bdate_field(self):
         today = dt.date.today()
-        yesterday = dt.date(day=today.day-1, month=today.month, year=1996).strftime('%d.%m.%Y')
+        yesterday = dt.date(day=today.day, month=today.month, year=1996).strftime('%d.%m.%Y')
         tomorrow = dt.date(day=today.day+1, month=today.month, year=1992).strftime('%d.%m.%Y')
         response = [
             {'id': 1, 'first_name': '', 'last_name': '', 'bdate': yesterday, 'online': 0},
