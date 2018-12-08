@@ -76,7 +76,7 @@ def get_study_day(page: str, day: str, week: str, group: str) -> Optional[Tuple[
 
 
 @bot.message_handler(commands=['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'])
-def get_day(message):
+def get_day(message: telebot.types.Message) -> None:
     try:
         day, week, group = message.text.split()
     except:
@@ -96,7 +96,7 @@ def get_day(message):
 
 
 @bot.message_handler(commands=['tommorow'])
-def get_tommorow(message):
+def get_tommorow(message: telebot.types.Message) -> None:
     try:
         _, group = message.text.split()
     except:
@@ -126,7 +126,7 @@ def get_tommorow(message):
 
 @bot.message_handler(commands=['week'])
 
-def get_week(message):
+def get_week(message: telebot.types.Message) -> None:
     try:
         _, week, group = message.text.split()
     except:
