@@ -68,9 +68,9 @@ class GameOfLife:
         for col in range(self.cell_height):
             for row in range(self.cell_width):
                 if clist[col][row] == 1:
-                    pygame.draw.rect(self.screen, pygame.Color('green'), [x, y, self.cell_size, self.cell_size])
+                    pygame.draw.rect(self.screen, pygame.Color('green'), [x+1, y+1, self.cell_size-1, self.cell_size-1])
                 else:
-                    pygame.draw.rect(self.screen, pygame.Color('white'), [x, y, self.cell_size, self.cell_size])
+                    pygame.draw.rect(self.screen, pygame.Color('white'), [x+1, y+1, self.cell_size-1, self.cell_size-1])
                 x += self.cell_size
             y += self.cell_size
             x = 0
@@ -97,5 +97,5 @@ class GameOfLife:
 
 
 if __name__ == '__main__':
-    game = GameOfLife(320, 240, 20)
+    game = GameOfLife(1000, 10000, 50)
     game.run()

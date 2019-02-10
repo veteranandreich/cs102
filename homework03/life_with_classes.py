@@ -37,9 +37,9 @@ class GameOfLife:
         y = 0
         for cell in cell_list:
             if cell.is_alive():
-                pygame.draw.rect(self.screen, pygame.Color('green'), [x, y, self.cell_size, self.cell_size])
+                pygame.draw.rect(self.screen, pygame.Color('green'), [x+1, y+1, self.cell_size-1, self.cell_size-1])
             else:
-                pygame.draw.rect(self.screen, pygame.Color('white'), [x, y, self.cell_size, self.cell_size])
+                pygame.draw.rect(self.screen, pygame.Color('white'), [x+1, y+1, self.cell_size-1, self.cell_size-1])
             x += self.cell_size
             if x >= self.width:
                 y += self.cell_size
