@@ -16,14 +16,19 @@ def news_list():
 
 @route("/add_label/")
 def add_label():
-    # PUT YOUR CODE HERE
+    s = session()
+    label = request.query.label
+    id = request.query.id
+    news = s.query(News).filter(News.id == id).one()
+    news.label = label
+    s.commit()
     redirect("/news")
 
 
 @route("/update")
 def update_news():
     s = session()
-    current_news = get_news('https://news.ycombinator.com/')
+    current_news = get_news('https://news.ycombinator.com/', 10)
     existing_news = s.query(News).all()
     existing_t_a = [(news.title, news.author) for news in existing_news]
     for news in current_news:

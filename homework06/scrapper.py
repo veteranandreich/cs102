@@ -4,35 +4,37 @@ from bs4 import BeautifulSoup
 
 def extract_news(soup):
     """ Extract news from a given web page """
-    news_list = []
-    t = soup.findAll("a", {"class": "storylink"})
-    sub = soup.findAll("td", {"class": "subtext"})
-    titles = [title.text for title in t]
-    urls = [title['href'] for title in t]
-    authors = soup.findAll('a', {"class": "hnuser"})
-    authors_list = [author.text for author in authors]
-    points = soup.findAll('span', {"class": "score"})
-    points_list = []
-    for point in points:
-        begining = point.text.find(' ')
-        points_list.append(point.text[:begining])
-    comments = []
-    for st in sub:
-        iscom = st.text.find('comments')
-        if iscom != -1:
-            begining = st.text.rfind('|')
-            comments.append(st.text[begining + 2:iscom - 1])
+    news_list = [{'author': '',
+                  'comments': 0,
+                  'points': 0,
+                  'title': '',
+                  'url': ''} for i in range(30)]
+    rows = soup.findAll("tr", {"class": "athing"})
+    for idx, row in enumerate(rows):
+        title = row.find('a', {"class": "storylink"}).text
+        url = row.find('a', {"class": "storylink"})['href']
+        news_list[idx]['title'] = title
+        news_list[idx]['url'] = url
+    sub_rows = soup.findAll("td", {"class": "subtext"})
+    for idx, sub in enumerate(sub_rows):
+        try:
+            points = ''.join([d for d in sub.find('span', {"class": "score"}).text if d.isdigit()])
+        except AttributeError:
+            points = None
+        author = sub.find('a', {"class": "hnuser"})
+        if author:
+            author = author.text
         else:
-            comments.append('0')
-    for i in range(30):  # 30 is an amount of news on 1 page
-        news_list.append(
-            {'author': authors_list[i],
-             'comments': comments[i],
-             'points': points_list[i],
-             'title': titles[i],
-             'url': urls[i]
-             }
-        )
+            author = None
+        iscom = sub.text.find('comments')
+        if iscom != -1:
+            begining = sub.text.rfind('|')
+            comments = sub.text[begining + 2:iscom - 1]
+        else:
+            comments = 0
+        news_list[idx]['points'] = points
+        news_list[idx]['author'] = author
+        news_list[idx]['comments'] = comments
     return news_list
 
 
