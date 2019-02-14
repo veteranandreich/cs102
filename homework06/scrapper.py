@@ -8,7 +8,7 @@ def extract_news(soup):
                   'comments': 0,
                   'points': 0,
                   'title': '',
-                  'url': ''} for i in range(30)]
+                  'url': ''} for _ in range(30)]
     rows = soup.findAll("tr", {"class": "athing"})
     for idx, row in enumerate(rows):
         title = row.find('a', {"class": "storylink"}).text
