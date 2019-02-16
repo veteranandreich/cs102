@@ -54,8 +54,6 @@ class NaiveBayesClassifier:
             labels_for_titles.append(self.labels[labels_chance.index(max(labels_chance))])
         return labels_for_titles
 
-
-
     def score(self, X_test, y_test):
         """ Returns the mean accuracy on the given test data and labels. """
         prediction = self.predict(X_test)
