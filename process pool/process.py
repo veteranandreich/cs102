@@ -1,8 +1,6 @@
-import os
-from time import sleep
 from multiprocessing import Process, Queue, Manager
+from heavy_func import sorter
 import psutil
-import random
 
 
 class ProcessPool:
@@ -61,15 +59,11 @@ class ProcessPool:
         print('Done')
         return process_amount, self.process_ram
 
-def doubler(a):
-    array = [random.randint(0, 100) for _ in range(1000000)]
-    array.sort()
-
 
 if __name__ == '__main__':
     pool = ProcessPool(2, 10, 1024)
     q = Queue()
     for _ in range(50):
         q.put(1)
-    a, b = pool.map(doubler, q)
+    a, b = pool.map(sorter, q)
     print(a, b)
