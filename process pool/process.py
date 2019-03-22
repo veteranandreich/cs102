@@ -1,5 +1,5 @@
-from multiprocessing import Process, Queue, Manager
-from heavy_func import sorter
+from multiprocessing import Process, Manager
+from queue import Queue
 import psutil
 
 
@@ -33,11 +33,7 @@ class ProcessPool:
 
     def map(self, func, bid_data: Queue):
         self.mem_test(func, bid_data.get())
-        print(self.process_ram)
         process_amount = int(self.mem_usage / self.process_ram)
-        print(process_amount)
-        data_size = bid_data.qsize()
-        print(data_size)
         procs = []
         if process_amount > self.max_workers:
             process_amount = self.max_workers
@@ -50,20 +46,11 @@ class ProcessPool:
         while not bid_data.empty():
             for idx, proc in enumerate(procs):
                 if not proc.is_alive():
+                    if bid_data.empty():
+                        break
                     new_proc = Process(target=func, args=(bid_data.get(),))
                     new_proc.start()
                     procs[idx] = new_proc
-                    print('{0:.2f}%'.format(100 - (bid_data.qsize()/data_size) * 100))
         for proc in procs:
             proc.join()
-        print('Done')
         return process_amount, self.process_ram
-
-
-if __name__ == '__main__':
-    pool = ProcessPool(2, 10, 1024)
-    q = Queue()
-    for _ in range(50):
-        q.put(1)
-    a, b = pool.map(sorter, q)
-    print(a, b)
