@@ -17,7 +17,10 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles'
+    'django.contrib.staticfiles',
+    'notes',
+    'accounts',
+    'widget_tweaks'
     ]
 
 MIDDLEWARE = [
@@ -80,3 +83,7 @@ STATIC_ROOT = '/static'
 STATICFILES_DIRS = [
     root('static'),
 ]
+
+AUTH_USER_MODEL = 'accounts.User'
+
+LOGIN_REDIRECT_URL = '/'
