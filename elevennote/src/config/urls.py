@@ -15,4 +15,7 @@ urlpatterns = [
 
     # Admin
     path('admin/', admin.site.urls),
+
+    # Api
+    path('api/', include('api.urls', namespace='api')),
 ]

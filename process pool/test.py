@@ -23,10 +23,9 @@ class MyTestCase(unittest.TestCase):
         worker = ProcessPool(1, 2, 512)
         self.assertEqual(2, worker.map(self.task, self.generate_data(30, 100000))[0])
 
-    @unittest.expectedFailure
     def test_count_worker_min(self):
         worker = ProcessPool(15, 20, 512)
-        self.assertEqual(2, worker.map(self.task, self.generate_data(30, 100000))[0])
+        self.assertRaisesRegex(Exception, "Not enough RAM", worker.map, self.task, self.generate_data(30, 100000))
 
     def test_memory(self):
         worker = ProcessPool()

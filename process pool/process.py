@@ -24,9 +24,10 @@ class ProcessPool:
         max_ram = 0
         try:
             while psutil.pid_exists(pid):
-                result = psutil.Process(pid).memory_info().rss / 1024 ** 2
+                result = (psutil.Process(pid).memory_info().rss + psutil.Process(pid).memory_full_info().swap) / 1024 ** 2
                 if result > max_ram:
                     max_ram = result
+                # time.sleep(1)
         except psutil.NoSuchProcess:
             pass
         return_dict['process_ram'] = max_ram
